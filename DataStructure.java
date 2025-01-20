@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class DataStructure {
 
 }
@@ -210,5 +212,34 @@ class AVLTree {
 
     public int getNumKeyBiggerOrEquals(int key) {
         return getNumKeyBiggerOrEquals(root, key);
+    }
+}
+
+class QuickSelect {
+    private int[] partition(int[] nums, int left, int right) {
+        Random rand = new Random();
+        int pivotIndex = left + rand.nextInt(right - left + 1); // Random pivot
+        int pivotValue = nums[pivotIndex];
+        // Move pivot to the end
+        swap(nums, pivotIndex, right);
+        int lt = left, gt = right, i = left;
+
+        while (i <= gt) {
+            if (nums[i] < pivotValue) {
+                swap(nums, lt++, i++);
+            } else if (nums[i] > pivotValue) {
+                swap(nums, i, gt--);
+            } else {
+                i++;
+            }
+        }
+
+        return new int[]{lt - 1, gt + 1};
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 }
