@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class DataStructure {
@@ -5,20 +7,27 @@ public class DataStructure {
 }
 
 class TreeNode {
-  int val;
-  TreeNode left;
-  TreeNode right;
-  TreeNode() {}
-  TreeNode(int val) { this.val = val; }
-  TreeNode(int val, TreeNode left, TreeNode right) {
-      this.val = val;
-      this.left = left;
-      this.right = right;
-  }
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode() {
+    }
+
+    TreeNode(int val) {
+        this.val = val;
+    }
+
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
 }
 
 class BIT {
     int[] bit;
+
     public BIT(int size) {
         bit = new int[size + 1];
     }
@@ -85,7 +94,7 @@ class AVLTree {
         return node == null ? 0 : node.size;
     }
 
-    Node rotateLeft (Node node) {
+    Node rotateLeft(Node node) {
         Node currRoot = node.left;
         node.setLeft(node.left.right);
         currRoot.setRight(node);
@@ -241,5 +250,62 @@ class QuickSelect {
         int temp = nums[i];
         nums[i] = nums[j];
         nums[j] = temp;
+    }
+}
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode() {
+    }
+
+    ListNode(int val) {
+        this.val = val;
+    }
+
+    ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
+    }
+}
+
+class UnionFind {
+    int[] parent, rank;
+
+    UnionFind(int n) {
+        parent = new int[n];
+        rank = new int[n];
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]); // Path compression
+        return parent[x];
+    }
+
+    void union(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        if (rootX != rootY) {
+            if (rank[rootX] > rank[rootY]) parent[rootY] = rootX;
+            else if (rank[rootX] < rank[rootY]) parent[rootX] = rootY;
+            else {
+                parent[rootY] = rootX;
+                rank[rootX]++;
+            }
+        }
+    }
+
+    List<Integer> primeFactors(int num) {
+        List<Integer> factors = new ArrayList<>();
+        for (int d = 2; d * d <= num; d++) {
+            if (num % d == 0) {
+                factors.add(d);
+                while (num % d == 0) num /= d;
+            }
+        }
+        if (num > 1) factors.add(num); // If num is a prime > 1, add it
+        return factors;
     }
 }
