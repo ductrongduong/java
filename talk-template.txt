@@ -46,7 +46,7 @@ That means:
 1 number appears twice
 1 number appears three times
 
-Then I go through this array from lowest frequency to highest. While k > 0, for each frequency i, I try to remove as many unique numbers as possible.
+Then I go through this array from the lowest frequency to highest. While k > 0, for each frequency i, I try to remove as many unique numbers as possible.
 The number of elements I can remove is:
 num = min(k // i, freqs[i])
 After removing, I update:
@@ -59,3 +59,65 @@ Start: ans = 4, k = 3
 At i = 1, remove 2 elements → ans = 2, k = 1
 At i = 2, we can’t remove anything more (num = 0), so we return 2.
 So final result is 2 unique numbers left.
+
+
+------------------------------------------------------------------------------------------------------------------------
+2516. Take K of Each Character From Left and Right
+ - Explain though process:
+I think the key idea is to find the longest substring that satisfies a certain frequency condition.
+Let me explain more clearly. First, we count the total number of each character in the string — for example, freqs[0] for 'a', freqs[1] for 'b', and so on.
+Now, since we need at least k of each character outside the substring — from the left and right parts — that means the substring can have at most freqs[i] - k of each character.
+So our goal becomes: find the longest substring where the number of 'a' is at most freqs[0] - k, the number of 'b' is at most freqs[1] - k, and same for 'c'.
+Once we find such a substring, we remove it, and the remaining characters will guarantee at least k of each letter.
+
+I think we can use a sliding window to find the longest valid substring.
+We expand the window to include more characters. If the frequency condition is broken, we shrink the window from the left.
+While doing this, we keep track of the maximum length of valid substring we've seen.
+At the end, we return that maximum length.
+
+ - Walk through example:
+For example, with s = "aabaaaacaabc" and k = 2, the total frequencies are [8, 2, 2].
+So the max allowed inside the middle substring is [6, 0, 0].
+The longest substring that satisfies this is "aaaa" with frequency [4, 0, 0].
+So the result is 12 - 4 = 8, meaning we remove 4 characters, and the remaining parts have at least 2 of each character.
+
+ - Code:
+class Solution {
+    public int takeCharacters(String s, int k) {
+        int n = s.length();
+        int[] totalCount = new int[3];  // count of 'a', 'b', 'c'
+
+        // Step 1: Count total frequency of each character
+        for (int i = 0; i < n; i++) {
+            totalCount[s.charAt(i) - 'a']++;
+        }
+
+        // Step 2: Check if it's possible to keep at least k of each character
+        for (int i = 0; i < 3; i++) {
+            totalCount[i] -= k;
+            if (totalCount[i] < 0) return -1;
+        }
+
+        // Step 3: Sliding window to find longest removable substring
+        int maxRemovable = 0;
+        int left = 0;
+        int[] windowCount = new int[3];
+
+        for (int right = 0; right < n; right++) {
+            int charIndex = s.charAt(right) - 'a';
+            windowCount[charIndex]++;
+
+            // Shrink the window if any char exceeds allowed
+            while (windowCount[charIndex] > totalCount[charIndex]) {
+                windowCount[s.charAt(left) - 'a']--;
+                left++;
+            }
+
+            // Update max removable substring length
+            maxRemovable = Math.max(maxRemovable, right - left + 1);
+        }
+
+        // Final result = total length - longest removable part
+        return n - maxRemovable;
+    }
+}
