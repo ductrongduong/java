@@ -1,12 +1,12 @@
+clarify, corner case, commu (show ra dc suy nghi), cover all corner case?
+------------------------------------------------------------------------------------------------------------------------
 Awesome, let me make sure I understand the question correctly: We are given a (string). We need to find ... (Restate a problem)
-For example, if the input is ..., the (longest valid substring) is ... .
+For example, if the input is ..., the output is ... .
 
-Just to confirm - substrings must be continuous, right?
 Is the string only lowercase letters, or also got uppercase and other characters?
 By the way, how long is the input string usually? Just so I know how much I need to optimise the solution.
 
-Okay, I’ll first try a brute-force solution just to get the idea right.
-Then I’ll think about how to improve it. (...).
+Okay, I’ll first try a brute-force solution just to get the idea right. Then I’ll think about how to improve it. (...).
 While doing that, I’ll keep track of the longest valid one I’ve found so far.
 So overall time complexity is .
 But still, it’s too slow if the input length is 10⁵ — it will time out.
@@ -22,7 +22,8 @@ Can I take a minute to think about the approach? (Let’s see... trying to recal
 - 1481. Least Number of Unique Integers after K Removals
  - Explain though process:
 I think a good way is to remove the numbers with the lowest frequency first.
-So the approach is like this: I use a hashmap to count the frequency of each number.
+So the approach is like this:
+I use a hashmap to count the frequency of each number.
 Then I remove elements starting from the ones with the lowest frequency, until I’ve removed k elements.
 Counting the frequency takes O(n) time.
 If I want to get the lowest frequency elements, I can either convert the map to a heap or a sorted array — that one takes O(log n) time for each removal.
@@ -64,22 +65,36 @@ So final result is 2 unique numbers left.
 ------------------------------------------------------------------------------------------------------------------------
 2516. Take K of Each Character From Left and Right
  - Explain though process:
-I think the key idea is to find the longest substring that satisfies a certain frequency condition.
-Let me explain more clearly. First, we count the total number of each character in the string — for example, freqs[0] for 'a', freqs[1] for 'b', and so on.
-Now, since we need at least k of each character outside the substring — from the left and right parts — that means the substring can have at most freqs[i] - k of each character.
-So our goal becomes: find the longest substring where the number of 'a' is at most freqs[0] - k, the number of 'b' is at most freqs[1] - k, and same for 'c'.
-Once we find such a substring, we remove it, and the remaining characters will guarantee at least k of each letter.
-
-I think we can use a sliding window to find the longest valid substring.
-We expand the window to include more characters. If the frequency condition is broken, we shrink the window from the left.
-While doing this, we keep track of the maximum length of valid substring we've seen.
-At the end, we return that maximum length.
+I think a good way is to find the longest substring that satisfies a certain frequency condition.
+So the approach is like this:
+First, I count how many times each character appears in the string. For example, 'a' goes to freqs[0], 'b' to freqs[1], and 'c' to freqs[2].
+Now, the problem says we must keep at least k of each character outside the substring — from both the left and right sides.
+So inside the substring, we can have at most freqs[i] - k of each character.
+That means our goal is: find the longest substring where the number of 'a' is at most freqs[0] - k, the number of 'b' is at most freqs[1] - k, and same for 'c'.
+To do that, I use a sliding window.
+I expand the window by moving the right pointer, and I count the characters inside the window.
+If any character goes over the allowed limit, I shrink the window from the left.
+While doing this, I keep track of the maximum length of valid window.
+At the end, I return n - maxLength, which is the smallest number of characters to remove from the middle.
+Time complexity is O(n), because we go through the string only once with the sliding window.
+Space complexity is O(1), since we just use a few arrays of size 3.
 
  - Walk through example:
-For example, with s = "aabaaaacaabc" and k = 2, the total frequencies are [8, 2, 2].
-So the max allowed inside the middle substring is [6, 0, 0].
-The longest substring that satisfies this is "aaaa" with frequency [4, 0, 0].
-So the result is 12 - 4 = 8, meaning we remove 4 characters, and the remaining parts have at least 2 of each character.
+Let me walk through an example to make it clearer.
+Suppose the input string is "aabaaaacaabc" and k = 2.
+First, I count the total frequency of each character.
+We have: 8 'a's, 2 'b's, and 2 'c's. So the frequency array is [8, 2, 2].
+Now, we must keep at least 2 of each character outside the middle substring — that means, in the left and right parts.
+So the max allowed inside the middle is:
+for 'a': 8 - 2 = 6
+for 'b': 2 - 2 = 0
+for 'c': 2 - 2 = 0
+This means: in the middle substring, we can have at most 6 'a's, but no 'b's and no 'c's.
+So now I use sliding window to find the longest substring that follows that rule.
+The best we can find is "aaaa" — this has 4 'a's, and no 'b' or 'c', so it’s valid.
+The total length of the string is 12, and the valid middle substring has length 4.
+That means we remove 4 characters, and we keep the remaining 8 — 4 on the left and 4 on the right.
+These left and right parts will contain at least 2 of each character, so the condition is satisfied.
 
  - Code:
 class Solution {

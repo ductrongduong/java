@@ -1,0 +1,15 @@
+I'm working on problem 378. Kth smallest element in a sorted matrix. I will send you something i will talk, please help me
+
+"So, just to make sure I understand the question correctly, we're given a 2d integer matrix where each row and column is sorted in ascending order, and we need to find the kth smallest number in it, right?"
+
+"For example, if we have a matrix like
+1, 5, 9
+10, 11, 13
+12, 13, 15
+and k is 5, if we flatten it into a sorted array, we get 1, 5, 9, 10, 11, 12, 13, 13, 15. So, the 5th smallest number would be 11, right?"
+
+"Okay, I think I get the problem. I just have some questions about the input."
+"Can I assume the input matrix is always valid, contains only numbers, and non-empty? Also, can I assume k is never greater than n squared?"
+"Okay, what’s the expected size of the matrix, and what time complexity should I aim for?"
+
+"So my first thought when I see this problem is that, we need to find kth smallest number, so we can use a max-heap to store k smallest number while going through the matrix, and then return the top of the heap as our answer".
